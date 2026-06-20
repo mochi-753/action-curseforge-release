@@ -23,19 +23,19 @@ This action builds release metadata, converts changelogs, and uploads `.jar` art
 - name: CurseForge Release
   uses: your-org/action-curseforge-release@v1
   with:
-    files-path: artifacts
-    change-log-path: CHANGELOG.md
-    change-log-type: markdown
-    release-type: release
+    files_path: artifacts
+    change_log_path: CHANGELOG.md
+    change_log_type: markdown
+    release_type: release
     name: "My Mod 1.0.0"
-    game-versions: |
+    game_versions: |
       11779
-    game-version-names: |
+    game_version_names: |
       Client
       Server
       NeoForge
       1.21.1
-    relations-path: dependencies.json
-    token: ${{ secrets.CURSEFORGE-TOKEN }}
-    project-id: 12345
+    relations_path: dependencies.json
+    token: ${{ secrets.CURSEFORGE_TOKEN }}
+    project_id: 12345
 ```

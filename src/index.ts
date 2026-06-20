@@ -122,7 +122,7 @@ async function main() {
             core.info(`Response from CurseForge: ${JSON.stringify(result, null, 2)}`);
         }
     } catch (error) {
-        core.setFailed(`Action failed: ${error}`);
+        core.setFailed(`Action failed. ${error}`);
     }
 }
 

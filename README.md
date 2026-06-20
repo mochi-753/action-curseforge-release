@@ -21,7 +21,7 @@ This action builds release metadata, converts changelogs, and uploads `.jar` art
 
 ```yaml
 - name: CurseForge Release
-  uses: your-org/action-curseforge-release@v1
+  uses: mochi-753/action-curseforge-release@v1
   with:
     files_path: artifacts
     change_log_path: CHANGELOG.md

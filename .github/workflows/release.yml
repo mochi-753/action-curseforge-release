@@ -51,7 +51,7 @@ jobs:
           
           echo "previous_tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
           
-          git tag -a "${{ inputs.version }}" HEAD
+          git tag -a "${{ inputs.version }}" -m "Release ${{ inputs.version }}" HEAD
           git push origin "${{ inputs.version }}"
           echo "release_tag=${{ inputs.version }}" >> $GITHUB_OUTPUT
 

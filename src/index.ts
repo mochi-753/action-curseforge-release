@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
-import { marked } from "marked";
-import { readFile, readdir } from "node:fs/promises";
+import {marked} from "marked";
+import {readdir, readFile} from "node:fs/promises";
 
 type ChangeLogType = "text" | "html" | "markdown";
 type ReleaseType = "release" | "beta" | "alpha";
@@ -27,7 +27,7 @@ async function convertChangeLog(changeLog: string, changeLogType: ChangeLogType)
         case "html":
             return changeLog;
         case "markdown":
-            return await marked.parse(changeLog);
+            return marked.parse(changeLog);
         default:
             throw new Error(`Invalid change log type: ${changeLogType}`);
     }
@@ -107,7 +107,7 @@ async function main() {
 
         const files = readdir(core.getInput("files_path"));
         const jarFiles = (await files).filter(file => file.endsWith(".jar"));
-        
+
         if (jarFiles.length === 0) {
             core.setFailed("No jar files found in the specified files path.");
             return;

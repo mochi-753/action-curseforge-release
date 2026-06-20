@@ -57,7 +57,7 @@ async function upload(metadata: any, file: Buffer, fileName: string): Promise<an
         `https://minecraft.curseforge.com/api/projects/${core.getInput("project_id")}/upload-file`, {
             method: "POST",
             headers: {
-                "X-Api-Token": core.getInput("token") || process.env.CURSEFORGE_API_TOKEN || "",
+                "X-Api-Token": core.getInput("token") || "",
                 "User-Agent": `${process.env.GITHUB_REPOSITORY}/action-curseforge-release`,
             },
             body: formData

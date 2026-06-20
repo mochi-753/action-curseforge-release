@@ -57,7 +57,7 @@ async function upload(metadata: any, file: Buffer, fileName: string): Promise<an
         `https://minecraft.curseforge.com/api/projects/${core.getInput("project_id")}/upload-file`, {
             method: "POST",
             headers: {
-                "X-Api-Token": core.getInput("token") || "",
+                "X-Api-Token": core.getInput("token"),
                 "User-Agent": `${process.env.GITHUB_REPOSITORY}/action-curseforge-release`,
             },
             body: formData
@@ -88,7 +88,7 @@ async function main() {
         const gameVersionNames = core.getMultilineInput("game_version_names").filter(name => name.trim().length > 0);
 
         const isMarkedForManualRelease: boolean = core.getInput("is_marked_for_manual_release") === "true";
-        const relations = await resolveRelations();
+        const relations_data = await resolveRelations();
 
         const metadata = {
             changelog: changeLog,
@@ -97,10 +97,11 @@ async function main() {
             gameVersions: gameVersions,
             gameVersionNames: gameVersionNames,
             releaseType: releaseType,
-            isMarkedForManualRelease: isMarkedForManualRelease,
-            relations: {
-                projects: relations,
-            }
+            isMarkedForManualRelease: isMarkedForManualRelease
+        }
+
+        if (relations_data.length > 0) {
+            Object.assign(metadata, { relations: { projects: relations_data } })
         }
 
         console.log("Resolved metadata:", JSON.stringify(metadata, null, 2));

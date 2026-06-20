@@ -5,46 +5,46 @@ description: "Github Action for creating CurseForge Releases"
 author: "Mochi753"
 
 inputs:
-  change-log:
+  change_log:
     description: "Change Log to Be submitted to CurseForge"
     required: false
-  change-log-path:
+  change_log_path:
     description: "Path to the changelog to be submitted to CurseForge"
     required: false
-  change-log-type:
+  change_log_type:
     description: "Type of the change log. Can be either 'text', 'html' or 'markdown'. Defaults to 'text'."
     required: false
     default: "text"
   name:
     description: "The name displayed on the CurseForge website"
     required: false
-  game-versions:
+  game_versions:
     description: "The game version this release is for. Can be specified multiple times for multiple versions."
     required: false
-  game-version-names:
+  game_version_names:
     description: "The game version names this release is for. Can be specified multiple times for multiple versions."
     required: false
-  release-type:
+  release_type:
     description: "The type of the release. Can be either 'release', 'beta' or 'alpha'. Defaults to 'release'."
     required: true
     default: "release"
-  is-marked-for-manual-release:
+  is_marked_for_manual_release:
     description: "If true, the file won't be released immediately once it is approved. Instead you can choose when to release it."
     required: false
     default: "false"
   relations:
     description: "Dependencies for this file."
     required: false
-  relations-path:
+  relations_path:
     description: "Path to the file containing the dependencies for this file."
     required: false
   token:
     description: "CurseForge API Token."
     required: false
-  project-id:
+  project_id:
     description: "The project ID to create the release for."
     required: true
-  files-path:
+  files_path:
     description: "Path to the file containing the files to be uploaded for this release."
     required: true
 

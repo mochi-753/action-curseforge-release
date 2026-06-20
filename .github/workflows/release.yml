@@ -32,7 +32,7 @@ jobs:
           node-version: 24
 
       - name: Build
-        run: npm run build
+        run: npm i && npm run build
 
       - name: Push changes
         run: |

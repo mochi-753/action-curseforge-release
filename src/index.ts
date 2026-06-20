@@ -1,9 +1,23 @@
 import * as core from "@actions/core";
 import {marked} from "marked";
 import {readdir, readFile} from "node:fs/promises";
+import {join} from "node:path";
 
 type ChangeLogType = "text" | "html" | "markdown";
 type ReleaseType = "release" | "beta" | "alpha";
+
+const CHANGE_LOG_TYPES = new Set<ChangeLogType>(["text", "html", "markdown"]);
+const RELEASE_TYPES = new Set<ReleaseType>(["release", "beta", "alpha"]);
+
+function getValidatedInput<T extends string>(name: string, allowedValues: ReadonlySet<T>): T {
+    const value = core.getInput(name);
+
+    if (!allowedValues.has(value as T)) {
+        throw new Error(`Invalid ${name}: ${value}. Expected one of: ${Array.from(allowedValues).join(", ")}`);
+    }
+
+    return value as T;
+}
 
 async function resolveChangeLog(): Promise<string> {
     const directChangeLog = core.getInput("change_log");
@@ -28,8 +42,6 @@ async function convertChangeLog(changeLog: string, changeLogType: ChangeLogType)
             return changeLog;
         case "markdown":
             return marked.parse(changeLog);
-        default:
-            throw new Error(`Invalid change log type: ${changeLogType}`);
     }
 }
 
@@ -75,9 +87,9 @@ async function upload(metadata: any, file: Buffer, fileName: string): Promise<an
 
 async function main() {
     try {
-        const rawChangeLogType: ChangeLogType = core.getInput("change_log_type") as ChangeLogType;
-        const changeLogTypeToSend: ChangeLogType = rawChangeLogType === "markdown" ? "html" : rawChangeLogType;
-        const releaseType: ReleaseType = core.getInput("release_type") as ReleaseType;
+        const rawChangeLogType: ChangeLogType = getValidatedInput("change_log_type", CHANGE_LOG_TYPES);
+        const changeLogTypeToSend: Exclude<ChangeLogType, "markdown"> = rawChangeLogType === "markdown" ? "html" : rawChangeLogType;
+        const releaseType: ReleaseType = getValidatedInput("release_type", RELEASE_TYPES);
 
         const rawChangeLog = await resolveChangeLog();
         const changeLog = await convertChangeLog(rawChangeLog, rawChangeLogType);
@@ -106,8 +118,10 @@ async function main() {
 
         console.log("Resolved metadata:", JSON.stringify(metadata, null, 2));
 
-        const files = readdir(core.getInput("files_path"));
-        const jarFiles = (await files).filter(file => file.endsWith(".jar"));
+        const filesPath = core.getInput("files_path");
+        const jarFiles = (await readdir(filesPath, { withFileTypes: true }))
+            .filter(file => file.isFile() && file.name.endsWith(".jar"))
+            .map(file => file.name);
 
         if (jarFiles.length === 0) {
             core.setFailed("No jar files found in the specified files path.");
@@ -115,7 +129,7 @@ async function main() {
         }
 
         for (const jarFile of jarFiles) {
-            const buffer = await readFile(`${core.getInput("files_path")}/${jarFile}`);
+            const buffer = await readFile(join(filesPath, jarFile));
             const result = await upload(metadata, buffer, jarFile);
 
             core.info(`Successfully uploaded file ${jarFile}`);
